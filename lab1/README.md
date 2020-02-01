@@ -1,5 +1,8 @@
 ## ECE 471 lab 1
 
+Final report can be found in the ./reports/ folder.
+
+
 ---
 
 ![instructions](docs/Lab1-Instructions-1.png)
