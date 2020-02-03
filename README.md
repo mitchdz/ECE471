@@ -1,5 +1,6 @@
 ## ECE 471
 
+Shannon's approach to cryptography. Symmetric key cryptography, cryptographic hash functions, and public key cryptosystems. Authentication, key management and key distribution. Wireless and network security.
 
 ## Building and installing
 
