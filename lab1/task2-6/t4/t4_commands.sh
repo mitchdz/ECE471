@@ -8,6 +8,10 @@ PLAIN_PREF="plain"
 mkdir -p ${CIPHER_PREF}/
 mkdir -p ${PLAIN_PREF}/
 
+echo "12345" > f1.txt
+echo "1234512345" > f2.txt
+echo "1234512345123451" > f3.txt
+
 #encrypting
 ${ENC_PREF}ecb -e -in f1.txt -out ${CIPHER_PREF}/f1_ecb_cipher.txt -K ${KEY}
 ${ENC_PREF}ecb -e -in f2.txt -out ${CIPHER_PREF}/f2_ecb_cipher.txt -K ${KEY}
