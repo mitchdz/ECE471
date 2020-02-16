@@ -1,3 +1,6 @@
 [submodule "lab1/ECE471_lab1_report"]
 	path = lab1/ECE471_lab1_report
 	url = https://github.com/mitchdz/ECE471_lab1_report.git
+[submodule "lab2/ECE471_lab2_report"]
+	path = lab2/ECE471_lab2_report
+	url = https://github.com/mitchdz/ECE471_lab2_report.git
