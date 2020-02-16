@@ -7,7 +7,7 @@ void main(int argc, char *argv[])
 {
 	int i;
 	char key[KEYSIZE];
-	srand ((unsigned int) * argv[1]);
+	srand (atoi(argv[1]));
 
 	for (i = 0; i< KEYSIZE; i++){
 		key[i] = rand()%256;
