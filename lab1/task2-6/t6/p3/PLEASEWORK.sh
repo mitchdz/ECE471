@@ -1,0 +1,10 @@
+#!/usr/bin/bash
+KEY="00112233445566778899aabbccddeeff"
+IV1="31323334353637383930313233343536"
+IV2="31323334353637383930313233343537"
+
+HEXCOMMAND="xxd -p"
+
+echo "bef65565572ccee2a9f9553154ed9498" > C1
+xxd -psr | openssl enc -aes-128-cbc -d -out P1 -K ${KEY} -iv ${IV1}
+xxd P1

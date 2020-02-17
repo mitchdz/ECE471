@@ -12,7 +12,7 @@ declare -a arr=("No" "no" "NO" "Yes" "YEs" "yes" "YES")
 for i in "${arr[@]}"
 do
 	echo "${i}" > ${i}
-	openssl enc -aes-128-cbc -e -a -in ${i} -out ${i}.bin -K  ${KEY} -iv ${IV}
+	openssl enc -aes-128-cbc -e -a -in ${i} -out ${i}.bin -K  ${KEY} -iv ${IV} -nosalt -nopad
 	printf "${i}.bin : "; ${HEXCOMMAND} ${i}.bin
 done
 
