@@ -1,7 +1,12 @@
 CC = gcc
 CFLAGS = -g -Wall
 
-all: bin/createKeys bin/generate128BitKeyFromEpoch
+SRC_DIR := ./src
+SRC_FILES := $(wildcard $(SRC_DIR)/*.c)
+
+OUT_FILES := bin/createKeys bin/generate128BitKeyFromEpoch bin/bruteForce
+
+all: ${OUT_FILES}
 
 bin/createKeys: src/createKeys.c
 	gcc $< -o $@
@@ -9,6 +14,14 @@ bin/createKeys: src/createKeys.c
 bin/generate128BitKeyFromEpoch: src/myGenerate128bitKey.c
 	gcc $< -o $@
 
+bin/bruteForce: src/bruteForce.c
+	gcc $< -o $@
+
+run: all
+	./run.sh
+
+bruteForce:
+	./bin/bruteForce
 
 clean:
 	rm bin/*

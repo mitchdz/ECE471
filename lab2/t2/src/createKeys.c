@@ -10,7 +10,7 @@
 #define T1 1524024529
 #define T2 1524038929
 
-#define OUTFILENAME "build/possibleKeys.txt"
+#define OUTFILENAME "out/possibleKeys.txt"
 #define KEYGENPROGRAM "./bin/generate128BitKeyFromEpoch "
 
 char* concat(const char *s1, const char *s2)
