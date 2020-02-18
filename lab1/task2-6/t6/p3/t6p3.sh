@@ -16,6 +16,9 @@ do
 	printf "${i}.bin : "; ${HEXCOMMAND} ${i}.bin
 done
 
-echo "bef65565572ccee2a9f9553154ed9498" > C1
-openssl enc -aes-128-cbc -d -a -in C1 -out P1 -K ${KEY} -iv ${IV}
+#626566363535363535373263636565326139663935353331353465643934
+#39380a
 
+#echo "bef65565572ccee2a9f9553154ed9498" > C1
+#echo "62656636353536353537326363656532613966393535333135346564393439380a" | openssl enc -aes-128-cbc -d -out P1 -K ${KEY} -iv ${IV} -nopad -nosalt
+#xxd P1

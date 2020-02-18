@@ -28,6 +28,7 @@ int main(int argc, char *argv[])
 	int i;
 	FILE *outFile;
 	outFile = fopen(OUTFILENAME, "w");
+	fprintf(outFile, "epoch,key\n");
 
 	for (i = T1; i <= T2; i++) {	
 		char path[1035];
