@@ -48,7 +48,19 @@ int main(int argc, char *argv[])
         // and run openssl on.
 
 
-        // TODO: run openssl
+
+	    // FILE *fp;
+
+ 		// fp = popen(concat(KEYGENPROGRAM, epochTime), "r");
+		// while (fgets(path, sizeof(path), fp) != NULL) {
+			
+		// 	char outline[2000];
+		// 	sprintf(outline, "%d,%s", i, path);
+
+		// 	printf("%s", outline); // print to stdout
+		// 	fprintf(outFile, "%s", outline); // print to file
+		// }
+		// pclose(fp);
 
 
 	}
