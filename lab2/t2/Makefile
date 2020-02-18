@@ -21,7 +21,7 @@ run: all
 	./run.sh
 
 bruteForce:
-	./bin/bruteForce
+	./bruteForce
 
 clean:
 	rm bin/*

@@ -7,8 +7,10 @@ while IFS=',' read -r epoch K
 do
 	OUTPUT=`openssl enc -aes-128-cbc -d -in data/C -K ${K} -iv ${IV} -nosalt -nopad | xxd -p`
 
+	echo "${K},${OUTPUT}"
 	if [ "$OUTPUT" == "$P" ]
 		then
 			echo "HIT! KEY: ${K}"
+			break
 	fi
 done < "$input"

@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 	outFile = fopen(OUTFILENAME, "w");
 	fprintf(outFile, "epoch,key\n");
 
-	for (i = T1; i <= T2; i++) {	
+	for (i = T1; i <= T2; i++) {
 		char path[1035];
 		char epochTime[20];
 		sprintf(epochTime, "%d", i);
