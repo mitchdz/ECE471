@@ -3,9 +3,14 @@
 #include <time.h>
 #include <unistd.h>
 #include <string.h>
+#include "aes.h"
 
-#define DATAFILE "out/possibleKeys.txt"
+#define DATAFILE "out/keys.csv"
 #define BUFSIZE 1024
+
+#define IV "09080706050403020100A2B2C2D2E2F2"
+#define P "255044462d312e350a25d0d4c5d80a34"
+#define C "d06bf9d0dab8e8ef880660d2af65aa82"
 
 int main(int argc, char *argv[])
 {
@@ -15,7 +20,7 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 
-    int epoch;
+    long epoch;
 
 	char buf[BUFSIZE];
 	int row_count = 1;
@@ -32,7 +37,7 @@ int main(int argc, char *argv[])
         while (field) {
 
             if (field_count == 0) { // epoch
-                epoch = atoi(field);
+                epoch = atol(field);
             }
             if (field_count == 1) { // key
                 //remove newline
@@ -46,6 +51,11 @@ int main(int argc, char *argv[])
         // printf("%d: %s\n", epoch, keyString);
         // we have epoch & key, need to convert key to raw hex
         // and run openssl on.
+
+		// printf("%ld -> %s\n", epoch, keyString);
+
+		
+
 
 
 

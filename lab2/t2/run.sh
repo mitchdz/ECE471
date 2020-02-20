@@ -1,3 +1,1 @@
-mkdir -p out
-mkdir -p bin
-./bin/createKeys
+./bruteForce.sh | tee results.txt
