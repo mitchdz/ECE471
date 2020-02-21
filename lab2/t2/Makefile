@@ -15,7 +15,7 @@ bin/brute: src/bruteForce.c
 	gcc $< -o $@
 
 brute: all
-	python3 pythonBrute.py
+	python3 pythonBrute.py | tee out.txt
 
 createKeys: all
 	./bin/gen | tee out/keys.csv
