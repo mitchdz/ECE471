@@ -4,7 +4,7 @@ CFLAGS = -g -Wall
 SRC_DIR := ./src
 SRC_FILES := $(wildcard $(SRC_DIR)/*.c)
 
-OUT_FILES := bin/gen bin/brute
+OUT_FILES := bin/gen
 
 all: ${OUT_FILES}
 
@@ -15,11 +15,12 @@ bin/brute: src/bruteForce.c
 	gcc $< -o $@
 
 brute: all
-	./bin/brute
+	python3 pythonBrute.py
 
-run: all
+createKeys: all
 	./bin/gen | tee out/keys.csv
 
+run: createKeys brute
 
 clean:
 	rm bin/*

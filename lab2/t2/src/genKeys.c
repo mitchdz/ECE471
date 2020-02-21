@@ -8,6 +8,7 @@
 #define KEYSIZE 16
 void main(int argc, char *argv[])
 {
+	printf("epoch,key\n");
 	for (unsigned long j = T1; j <= T2; j++) {
 		printf("%ld,", j);
 		int i;
