@@ -2,8 +2,10 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define T1 1524024529
+//#define T1 1524024529
 #define T2 1524031729
+#define T1 1524024529
+
 
 #define KEYSIZE 16
 void main(int argc, char *argv[])
