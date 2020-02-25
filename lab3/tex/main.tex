@@ -1,0 +1,110 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+
+%%%%%%%%%%%%%%%%%%%%
+\newcommand{\hide}[1]{}
+
+
+
+\usepackage{natbib}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{mathtools}
+\usepackage[utf8]{inputenc}
+\usepackage{float}
+
+
+\hide{
+\usepackage{amscd}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{cases}		 
+\usepackage{cutwin}
+\usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage{epstopdf}
+\usepackage{graphicx}
+\usepackage{ifthen}
+\usepackage{lipsum}
+\usepackage{mathrsfs}	
+\usepackage{multimedia}
+\usepackage{wrapfig}
+}
+\bibliographystyle{humanbio}
+
+
+\usepackage[utf8]{inputenc}
+
+\newcommand{\itemlist}[1]{\begin{itemize}#1\end{itemize}}
+\newcommand{\enumlist}[1]{\begin{enumerate}#1\end{enumerate}}
+\newcommand{\desclist}[1]{\begin{description}#1\end{description}}
+\newcommand\tab[1][0.5cm]{\hspace*{#1}}
+
+\newcommand{\Answer}[1]{\begin{quote}{\color{blue}#1}\end{quote}}
+\newcommand{\AND}{\wedge}
+\newcommand{\OR}{\vee}
+\newcommand{\ra}{\rightarrow}
+\newcommand{\lra}{\leftrightarrow}
+
+\title {{\bf ECE 471 Lab 3} \\
+\large{MD5 Collision Attack Lab}}
+
+\author{Mitchell Dzurick}
+\date{3/9/2020}
+\begin{document}
+
+\maketitle
+\textbf{Github with all documentation - \url{https://www.github.com/mitchdz/ECE471}}
+\tableofcontents 
+
+\clearpage
+
+
+Secret Key Encryption Lab
+
+Copyright © 2018 Wenliang Du, Syracuse University. The development of this document was partially funded by the National
+Science Foundation under Award No. 1303306 and 1718086. This work is licensed under a Creative Commons
+Attribution-NonCommercial- ShareAlike 4.0 International License. A human-readable summary of (and not a substitute for)
+the license is the following: You are free to copy and redistribute the material in any medium or format. You must give
+appropriate credit. If you remix, transform, or build upon the material, you must distribute your contributions under the
+same license as the original. You may not use the material for commercial purposes.
+
+\section{Overview}
+
+Generating random numbers is a quite common task in security software. In many cases, encryption keys
+are not provided by users, but are instead generated inside the software. Their randomness is extremely
+important; otherwise, attackers can predict the encryption key, and thus defeat the purpose of encryption.
+Many developers know how to generate random numbers (e.g. for Monte Carlo simulation) from their
+prior experiences, so they use the similar methods to generate the random numbers for security purpose.
+Unfortunately, a sequence of random numbers may be good for Monte Carlo simulation, but they may be
+bad for encryption keys. Developers need to know how to generate secure random numbers, or they will
+make mistakes. Similar mistakes have been made in some well-known products, including Netscape and
+Kerberos. \\
+\tab In this lab, students will learn why the typical random number generation method is not appropriate
+for generating secrets, such as encryption keys. They will further learn a standard way to generate pseudo
+random numbers that are good for security purposes. This lab covers the following topics:
+
+
+    \begin{itemize}
+        \item Pseudo random number generation
+        \item Mistakes in random number generation
+        \item Generating encryption key
+        \item The /dev/random and /dev/urandom device files
+    \end{itemize}
+
+\textbf{Lab Environment}. This lab has been tested on our pre-built Ubuntu 12.04 VM and Ubuntu 16.04 VM, both of which
+can be downloaded from the SEED website.
+
+\clearpage
+
+\section{Lab Tasks}
+
+
+\end{document}
+
