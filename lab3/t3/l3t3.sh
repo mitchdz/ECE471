@@ -1,3 +1,5 @@
+# md5collgen -p AAA -o out1.bin out2.bin
+# gcc prog.c
 head -c 12320 a.out > a_pre
 tail -c +12512 a.out > a_suf
 cat a_pre out1.bin a_suf > manu_1
