@@ -1,7 +1,11 @@
-# md5collgen -p AAA -o out1.bin out2.bin
-# gcc prog.c
-head -c 12320 a.out > a_pre
-tail -c +12512 a.out > a_suf
-cat a_pre out1.bin a_suf > manu_1
-cat a_pre out2.bin a_suf > manu_2
-md5sum manu_1 manu_2
+head -c 4224 a.out > prefix
+md5collgen -p prefix -o P Q
+tail -c +4352 a.out > suffix
+cat P suffix > new1
+cat Q suffix > new2
+md5sum new1 new2
+chmod +x new1
+chmod +x new2
+echo $(./new1) | md5sum
+echo $(./new2) | md5sum
+
