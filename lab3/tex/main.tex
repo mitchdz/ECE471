@@ -16,6 +16,8 @@
 \usepackage{mathtools}
 \usepackage[utf8]{inputenc}
 \usepackage{float}
+\usepackage{listings}
+\usepackage{xcolor}
 
 
 \hide{
@@ -194,6 +196,9 @@ Figure~\ref{fig:t1p1} shows that the files don't completely differ, but they do 
 \subsection{Task 2: Understanding MD5's Property}
 \subsubsection{Task 2: Solution}
 
+
+
+
 In order to finish this task, some setup is required. To generate all of the files, the commands below are executed.
 \begin{verbatim}
 echo "hello!" > prefix.txt
@@ -229,15 +234,128 @@ Figure~\ref{fig:t2p2} also shows the hex values of T1 and T2 which shows that 0x
 \subsection{Task 3: Generating Two Executable Files with the Same MD5 Hash}
 \subsubsection{Task 3: Solution}
 
+This section explores how to create two different executable files with the same has. The idea behind this task is that you have a binary executable with a section you want to change. assuming the prefix and the suffix are the same, we know that MD5(prefix $||$ P $||$ suffix) = MD5(prefix $||$ Q $||$ suffix) where P and Q is data generated from md5collgen.
+
+
 For this task, a program needs to be compiled such that an array has changed values, but the hash of the executables are the same. The program is shown below.
+
+\begin{verbatim}
+#include <stdio.h>
+
+unsigned char xyz[200] = {
+	0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41,
+	0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41,
+	0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41,
+	0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41,
+	0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41,
+	0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41,
+	0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41,
+	0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41,
+	0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41,
+	0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41,
+	0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41,
+	0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41,
+	0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41,
+	0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41,
+	0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41,
+	0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41,
+	0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41,
+	0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41,
+	0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41,
+	0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41, 0x41,
+};
+
+int main()
+{
+	for (int i = 0; i < 200; i++){
+		printf("%x", xyz[i]);
+	}
+	printf("\n");
+}
+\end{verbatim}
+
+The executable is generated with with gcc.
+
+\begin{verbatim}
+$ gcc prog.c
+\end{verbatim}
+
+using vim, we can view the raw hex of the outputted file, a.out
+
+\begin{verbatim}
+vim a.out
+\end{verbatim}
+
+Then the command `:\%!xxd` is ran inside vim to launch xxd within vim. Using vim, we search for the string of A's with the command `/AAAA` and find the following:
+
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.65]{pics/t3p0.png}
+	\end{center}{}
+	\caption{raw hex of a.out}
+	\label{fig:t3p0}
+\end{figure}
+
+The first line of A' begin on line 261 (byte 4176 because 261 * 16). We want a multiple of 16 so we choose byte 4224 which is line 264. Let's retrieve all of the binary data before byte 4224 with the following command
+
+\begin{lstlisting}[backgroundcolor = \color{lightgray},
+	language = C,
+	xleftmargin = 2cm,
+	framexleftmargin = 1em]
+$ head -c 4224 a.out > prefix
+\end{lstlisting}
+
+we then have the prefix that we can use the md5collgen program on.
+
+\begin{lstlisting}[backgroundcolor = \color{lightgray},
+language = C,
+xleftmargin = 2cm,
+framexleftmargin = 1em]
+$ md5collgen -p prefix -o P Q
+\end{lstlisting}
+
+Finally, we need to extract the rest of the data in the program. Let's grab 128 bytes after the start of the line we chose, 4224 + 128 = 4352.
+
+\begin{lstlisting}[backgroundcolor = \color{lightgray},
+language = C,
+xleftmargin = 2cm,
+framexleftmargin = 1em]
+$ tail -c +4352 a.out > suffix
+\end{lstlisting}
+
+Now we have all of the components to build the different executables but with the same hash!
+
+\begin{lstlisting}[backgroundcolor = \color{lightgray},
+language = C,
+xleftmargin = 2cm,
+framexleftmargin = 1em]
+$ cat P suffix > new1
+$ cat Q suffix > new2
+$ md5sum new1 new2
+$ chmod +x new1
+$ chmod +x new2
+$ echo $(./new1) | md5sum
+$ echo $(./new2) | md5sum
+\end{lstlisting}
+
+The output of the previous command is shown below.
 
 \begin{figure}[H]
 	\begin{center}
 		\includegraphics[scale=0.65]{pics/t3p1.png}
 	\end{center}{}
-	\caption{task 3 program}
+	\caption{md5hash of new files}
 	\label{fig:t3p1}
 \end{figure}
+
+Figure~\ref{fig:t3p1} shows the results of running md5sum on the executable files new1 and new2. These files are then executed and their output is hashes as well for simplicity in comparison. It is very easy to determine that the output of the files are different from their hash.
+
+
+\subsection{Task 4: Making the Two Programs Behave Differently}
+\subsubsection{Task 4: Solution}
+
+
 
 
 
