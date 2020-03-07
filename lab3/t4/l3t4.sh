@@ -1,4 +1,3 @@
-#START="16640"
 START="4192"
 END=$(($START + 129))
 
