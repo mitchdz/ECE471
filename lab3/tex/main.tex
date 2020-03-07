@@ -356,12 +356,88 @@ Figure~\ref{fig:t3p1} shows the results of running md5sum on the executable file
 \subsubsection{Task 4: Solution}
 
 
+In order to complete this task, some modification to the code in Task 3 is needed. The following resultant code is shown below:
 
+\begin{verbatim}
+#include <stdio.h>
 
+unsigned char b[200] = {<200 A's>};
+unsigned char b[200] = {<200 A's>};
+int main()
+{
+int flag = 1;
 
+    for (int i = 0;i<200;i++) {
+        if (a[i] != b[1]){flag = 0; break;}
+    }
+    if(flag) printf("Regular execution!\n");
+    else printf("Malicious code!\n");
+    return 0;
+}
 
+\end{verbatim}
 
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.65]{pics/t4p0.png}
+	\end{center}{}
+	\caption{md5hash of new files}
+	\label{fig:t3p1}
+\end{figure}
 
+running gcc on the program as follows:
+\begin{verbatim}
+$ gcc prog.c
+\end{verbatim}
+
+produces the executable a.out which we can view the hex in vim by using the keystroke `:\%!xxd` once in vim. Figure~\ref{fig:ig:t3p1} shows the results of viewing the file's hex with vim. It can be seen that the first batch of 'AAAAAAAAAAAAAAAAAA's begins on line 261 which is byte 4176. We want a multiple of 64 so let's use line 262 which is byte 4192.
+
+The following code is used to create the two executables:
+
+\begin{verbatim}
+START="4192"
+END=$(($START + 129))
+
+#extract the prefix and temporary suffix
+head -c ${START} a.out > prefix
+md5collgen -p prefix -o out1 out2
+tail -c +${END} a.out > suffixtemp
+
+# take the first 8 bytes of the suffix and add them to the end of out1 and out2
+head -c 8 suffixtemp > arrtemp
+cat out1 arrtemp > out1arr
+cat out2 arrtemp > out2arr
+tail -c +9 suffixtemp > suffix
+
+# now we need to fix the buffer between the two arrays
+tail -c +25 suffix > suffixtemp
+head -c 24 suffix > buffer
+cat out1arr buffer > file1buffer
+cat out2arr buffer > file2buffer
+
+# now the malicious stuff happens 
+tail -c +201 suffixtemp > suffix
+tail -c +4161 out1arr > comparray
+cat file1buffer comparray suffix > goodCode
+cat file2buffer comparray suffix > maliciousCode
+
+md5sum goodCode maliciousCode
+chmod +x goodCode
+chmod +x maliciousCode
+
+./goodCode
+./maliciousCode
+
+\end{verbatim}
+
+Upon executing the above code, the following is output:
+
+\begin{verbatim}
+Regular execution!
+Malicious code!
+\end{verbatim}
+
+Thus showcasing how to exploit this particular vulnerability
 
 \end{document}
 
