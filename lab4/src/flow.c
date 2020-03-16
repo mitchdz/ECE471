@@ -135,7 +135,7 @@ int main ()
 
     BIGNUM* mod = BN_new();
     BN_hex2bn(&mod, EHEX3_2);
-    
+
     BIGNUM* message = BN_new();
     BN_hex2bn(&message, MHEX3_2);
 
@@ -151,7 +151,7 @@ int main ()
     printf("(3.3)\n");
     BIGNUM* task3_C = BN_new();
     BN_hex2bn(&task3_C, CHEX3_3);
-    
+
     dec = RSA_DEC(task3_C, privateKey3_2, publicKey);
     printf("Decrypted message: "); printHEX(BN_bn2hex(dec)); printf("\n");
 
@@ -159,13 +159,14 @@ int main ()
     // part 3.4 Signing a Message
     printf("(3.4)\n");
     BIGNUM* BN_t4 = BN_new();
-    BN_hex2bn(&BN_t4, "49206f776520796f75202432303030"); // python -c ’print("I owe you $2000".encode("hex"))’
+        // python -c ’print("I owe you $2000".encode("hex"))’
+    BN_hex2bn(&BN_t4, "49206f776520796f75202432303030"); 
     enc = RSA_ENC(BN_t4, privateKey3_2, publicKey);
     printBN("Signature: ", enc);
     dec = RSA_DEC(enc, mod, publicKey);
     printf("message: "); printHEX(BN_bn2hex(dec));
-
-    BN_hex2bn(&BN_t4, "49206f776520796f75202433303030"); // python -c ’print("I owe you $2000".encode("hex"))’
+        // python -c ’print("I owe you $2000".encode("hex"))’
+    BN_hex2bn(&BN_t4, "49206f776520796f75202433303030");
     enc = RSA_ENC(BN_t4, privateKey3_2, publicKey);
     printBN("Signature: ", enc);
     dec = RSA_DEC(enc, mod, publicKey);
@@ -175,13 +176,14 @@ int main ()
     printf("(3.5)\n");
     BIGNUM *BN_t5 = BN_new();
     BIGNUM *S = BN_new();
+        //python -c 'print("Launch a missile.".encode("hex"))'
     BN_hex2bn(&BN_t5, "4c61756e63682061206d6973736c652e");
-    BN_hex2bn(&publicKey, EHEX3_5);
+    BN_hex2bn(&publicKey, NHEX3_5);
     BN_hex2bn(&S, SHEX3_5);
-
 
     dec = RSA_DEC(S, mod, publicKey);
     printf("message: "); printHEX(BN_bn2hex(dec)); printf("\n");
+
 
 
 
@@ -190,6 +192,6 @@ int main ()
 
 
 
-    OPENSSL_free(ctx);
+	BN_CTX_free(ctx);
     return 0;
 }
