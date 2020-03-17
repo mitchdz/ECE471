@@ -386,18 +386,123 @@ The function above calculates $\Phi$(N) = (p - 1)(q - 1) and then uses the totie
 
 \subsection{Task 2: Encrypting a Message}
 \subsubsection{Task 2: Solution}
+The output of flow.c shown in Figure~\ref{fig:flow} is as follows:
+\begin{verbatim}
+(3.2)
+Public key:  DCBFFE3E51F62E09CE7032E2677A78946A849DC4CDDE3A4D0CB81629242FB1A5
 
+Message Hex: 4120746F702073656372657421
+Encrypted message: 6FB078DA550B2650832661E14F4F8D2CFAEF475A0DF3A75CACDC5DE5CFC5FADC
+Decrypted message: A top secret!
+\end{verbatim}
 
+Where the message "A top secret!" is encrypted to "6FB078DA550B2650832661E14F4F8D2CFAEF475A0DF3A75CACDC5DE5CFC5FADC".
 
+The code that encrypts is shown below:
+\begin{verbatim}
+BIGNUM* RSA_ENC(BIGNUM* message, BIGNUM* mod, BIGNUM* pub_key){
+BN_CTX *ctx = BN_CTX_new();
+BIGNUM* enc = BN_new();
+BN_mod_exp(enc, message, mod, pub_key, ctx);
+BN_CTX_free(ctx);
+return enc;
+}
+\end{verbatim}
+Which is a very simple operation that follows the following algorithm:
+
+\begin{center} $enc = message^{mod} \% pub\_key$ \end{center}
+
+Here is the following function given by \url{openssl.org/docs/man1.1.0/man3/BN_mod_exp.html}:
+\begin{verbatim}
+ int BN_mod_exp(BIGNUM *r, BIGNUM *a, const BIGNUM *p,
+\end{verbatim}
+
+where BN$\_$mod$\_$exp() computes a to the p-th power modulo m (r=$a^p$ $\%$ m).
 
 \subsection{Task 3: Decrypting a Message}
 \subsubsection{Task 3: Solution}
+The decrypted message is shown in Figure~\ref{fig:flow} as:
 
+Decrypted message: Password is dees
+
+This is found through the custom function created below:
+\begin{verbatim}
+BIGNUM* RSA_DEC(BIGNUM* enc, BIGNUM* priv_key, BIGNUM* pub_key){
+  BN_CTX *ctx = BN_CTX_new();
+  BIGNUM* dec = BN_new();
+  BN_mod_exp(dec, enc, priv_key, pub_key, ctx);
+  BN_CTX_free(ctx);
+  return dec;
+}
+\end{verbatim}
+This function is extremely similar to Task 2's solution in that we use BN$\_$mod$\_$exp. The only difference now is that we find the message through the following algorithm:
+
+\begin{center} $message = enc^{priv\_key} \% pub\_key$ \end{center}
+
+which is just the inverse of encryption.
 \subsection{Task 4: Signing a Message}
 \subsubsection{Task 4: Solution}
+The output for Task 4 is shown below:
+\begin{verbatim}
+Signature:  80A55421D72345AC199836F60D51DC9594E2BDB4AE20C804823FB71660DE7B82
+message: I owe you $2000
+Signature:  04FC9C53ED7BBE4ED4BE2C24B0BDF7184B96290B4ED4E3959F58E94B1ECEA2EB
+message: I owe you $3000
+\end{verbatim}
+
+Where the signature is wildly different for the very similar message.
+
+The code segment for signing a message is shown below.
+\begin{verbatim}
+/* part 3.4 Signing a Message */
+printf("(3.4)\n");
+BIGNUM* BN_t4 = BN_new();
+
+// python -c ’print("I owe you $2000".encode("hex"))’
+BN_hex2bn(&BN_t4, "49206f776520796f75202432303030"); 
+enc = RSA_ENC(BN_t4, privateKey3_2, publicKey);
+printBN("Signature: ", enc);
+dec = RSA_DEC(enc, mod, publicKey);
+printf("message: "); printHEX(BN_bn2hex(dec));
+
+// python -c ’print("I owe you $3000".encode("hex"))’
+BN_hex2bn(&BN_t4, "49206f776520796f75202433303030");
+enc = RSA_ENC(BN_t4, privateKey3_2, publicKey);
+printBN("Signature: ", enc);
+dec = RSA_DEC(enc, mod, publicKey);
+printf("message: "); printHEX(BN_bn2hex(dec)); printf("\n");
+\end{verbatim}
+
+To sign the message is pretty straight forward. We get the message in BN$\_$t4 and then encrypt that message with the private and public key. The same is done for a slightly modified message.
 
 \subsection{Task 5: Verifying a Signature}
 \subsubsection{Task 5: Solution}
+The output for Task 5 is shown:
+\begin{verbatim}
+message (regular) : Launch a missile.
+message (corruped) : <corrupted output>
+\end{verbatim}
+
+The message is verified because it shows the message "Launch a missile." The slightly modified signature (by even one bit) shows very corrupted output. The code segment for this section is shown below.
+
+\begin{verbatim}
+printf("(3.5)\n");
+BIGNUM *S = BN_new();
+
+BN_hex2bn(&publicKey, NHEX3_5);
+BN_hex2bn(&S, SHEX3_5);
+
+// correct signature
+dec = RSA_DEC(S, mod, publicKey);
+printf("message (regular) : "); printHEX(BN_bn2hex(dec)); printf("\n");
+
+// corrupted signature
+BN_hex2bn(&S, SHEX3_5p2);
+dec = RSA_DEC(S, mod, publicKey);
+printHEX(BN_bn2hex(dec)); printf("\n");
+\end{verbatim}
+
+where NHEX3$\_$35 and NHEX3$\_$35 reside in the helper file as defines. The code is very straightforward and similar to Task 4.
 
 \subsection{Task 6: Manually Verifying an X.509 Certificate}
 \subsubsection{Task 6: Solution}
