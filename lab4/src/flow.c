@@ -92,42 +92,29 @@ int main ()
     dec = RSA_DEC(S, mod, publicKey);
     printHEX(BN_bn2hex(dec)); printf("\n");
 
-
-
     /* Part 3.6 Manually Verifying an X.509 Certificate */
-	//wikipedia cert
+    //github.com cert
     printf("(3.6)\n");
-    // We extracted the public key and modulus from the certificate at example.com
-    // The command was: openssl x509 -in c1.pem -text -noout
 
     // Assign the public key
     BIGNUM* t6_pub_key = BN_new();
-    BN_hex2bn(&t6_pub_key, PHEX3_6);
+    BN_hex2bn(&t6_pub_key, N6);
     printBN("the public key is: ", t6_pub_key);
 
     // mod
     BIGNUM* t6_mod = BN_new();
-    BN_hex2bn(&t6_mod, EHEX3_6);
+    BN_hex2bn(&t6_mod, E6);
 
-    // Signature:
-    // openssl x509 -in c0.pem -text -noout
+    // signature
     BIGNUM* BN_t6 = BN_new();
-    BN_hex2bn(&BN_t6, SHEX3_6);
-
-    // We generated the hash of the certificate body like so:
-    // First, extract the body of the certificate
-    // openssl asn1parse -i -in c0.pem -strparse 4 -out c0_body.bin -noout
-    // Then, compute the hash:
-    // sha256sum c0_body.bin
-    // This hash will be used for comparison for when we decrypt the signature.
+    BN_hex2bn(&BN_t6, S6);
 
     // This value should match the pre-comptued hash
     BIGNUM* t6_dec = RSA_DEC(BN_t6, t6_mod, t6_pub_key);
     printBN("the hash for task6 is: ", t6_dec);
     printf("\n");
-
-    printf("the pre-computed hash was: ");
-    printf("902677e610fedcdd34780e359692eb7bd199af35115105636aeb623f9e4dd053");
+    printf("pre-computed hash: ");
+    printf(calcHASH6);
     printf("\n");
 
     return 0;

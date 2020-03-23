@@ -18,6 +18,7 @@
 \usepackage{float}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{seqsplit}
 
 
 \hide{
@@ -110,7 +111,7 @@ This entire lab is done with a single program titled $flow.c$. The program can b
 
 The code is pasted blow:
 \begin{verbatim}
-//flow.c
+/* flow.c */
 #include <stdio.h>
 #include <string.h>
 #include <openssl/bn.h>
@@ -205,7 +206,29 @@ dec = RSA_DEC(S, mod, publicKey);
 printHEX(BN_bn2hex(dec)); printf("\n");
 
 /* Part 3.6 Manually Verifying an X.509 Certificate */
+//github.com cert
 printf("(3.6)\n");
+
+// Assign the public key
+BIGNUM* t6_pub_key = BN_new();
+BN_hex2bn(&t6_pub_key, N6);
+printBN("the public key is: ", t6_pub_key);
+
+// mod
+BIGNUM* t6_mod = BN_new();
+BN_hex2bn(&t6_mod, E6);
+
+// signature
+BIGNUM* BN_t6 = BN_new();
+BN_hex2bn(&BN_t6, S6);
+
+// This value should match the pre-comptued hash
+BIGNUM* t6_dec = RSA_DEC(BN_t6, t6_mod, t6_pub_key);
+printBN("the hash for task6 is: ", t6_dec);
+printf("\n");
+printf("pre-computed hash: ");
+printf(calcHASH6);
+printf("\n");
 
 return 0;
 }
@@ -214,6 +237,7 @@ return 0;
 
 \begin{verbatim}
 //4_util.h
+/* l4_util.h */
 #include <stdio.h>
 #include <string.h>
 #include <string.h>
@@ -238,6 +262,14 @@ return 0;
 #define SHEX3_5p2 "643D6F34902D9C7EC90CB0B2BCA36C47FA37165C0005CAB026C0542CBDB6803F"
 #define EHEX3_5 "010001"
 #define NHEX3_5 "AE1CD4DC432798D933779FBD46C6E1247F0CF1233595113AA51B450F18116115"
+
+#define N6 "D753A40451F899A616484B6727AA9349D039ED0CB0B00087F1672886858C8E63DABCB14038E2D3F5ECA50518B83D3EC5991732EC188CFAF10CA6642185CB071034B052882B1F689BD2B18F12B0B3D2E7881F1FEF387754535F80793F2E1AAAA81E4B2B0DABB763B935B77D14BC594BDF514AD2A1E20CE29082876AAEEAD764D69855E8FDAF1A506C54BC11F2FD4AF29DBB7F0EF4D5BE8E16891255D8C07134EEF6DC2DECC48725868DD821E4B04D0C89DC392617DDF6D79485D80421709D6F6FFF5CBA19E145CB5657287E1C0D4157AAB7B827BBB1E4FA2AEF2123751AAD2D9B86358C9C77B573ADD8942DE4F30C9DEEC14E627E17C0719E2CDEF1F910281933"
+#define E6 "010001"
+#define S6 "700f5a96a758e5bf8a9da827982b007f26a907daba7b82544faf69cfbcf259032bf2d5745825d81ea42076626029732ad7dccc6f77856bca6d24f83513473fd2e2690a9d342d7b7b9bcd1e75d5506c3ecb1ca330b1aa9207a93a767645bd7891c4ce1a9e22e40b89bae68cc17982a3b8d4c0fc1f2ded4d5255412aa83a2cad0772ae0ad2c667c44f07171899f765a95760155a344c11cff6cf6b213680efc6f15463263539eebbc483649b240a73eca0481673c8b9d7485556987af7bb975c69a406180478dafe9876be222f7f0777874e88199af855ec5c122a5948db493e155e675aa25eeecc53288c0e33931403640bc5e5780994015a75fc929dafed7a29"
+#define calcHASH6 "85088f934d3e58e3673ea5be32c7c8cf6965e4ab93fbed4fff634723f46d5693"
+
+
+
 
 #define NBITS 256
 
@@ -313,6 +345,7 @@ buf = st[i];
 }
 printf("\n");
 }
+
 \end{verbatim}
 
 The commands used in the makefile in the git directory to compile are as follows:
@@ -348,8 +381,11 @@ message (regular) : Launch a missile.
 
 message (corruped) : <corrupted output>
 
-(3.6)
 \end{verbatim}
+the public key is:  \seqsplit{753A40451F899A616484B6727AA9349D039ED0CB0B00087F1672886858C8E63DABCB14038E2D3F5ECA50518B83D3EC5991732EC188CFAF10CA6642185CB071034B052882B1F689BD2B18F12B0B3D2E7881F1FEF387754535F80793F2E1AAAA81E4B2B0DABB763B935B77D14BC594BDF514AD2A1E20CE29082876AAEEAD764D69855E8FDAF1A506C54BC11F2FD4AF29DBB7F0EF4D5BE8E16891255D8C07134EEF6DC2DECC48725868DD821E4B04D0C89DC392617DDF6D79485D80421709D6F6FFF5CBA19E145CB5657287E1C0D4157AAB7B827BBB1E4FA2AEF2123751AAD2D9B86358C9C77B573ADD8942DE4F30C9DEEC14E627E17C0719E2CDEF1F910281933} \\
+the hash for task6 is:  \seqsplit{01FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF003031300D060960864801650304020105000420}{\seqsplit{85088F934D3E58E3673EA5BE32C7C8CF6965E4AB93FBED4FFF634723F46D5693}
+	
+pre-computed hash: 85088f934d3e58e3673ea5be32c7c8cf6965e4ab93fbed4fff634723f46d5693}
 	\caption{output of running the flow program}
 	\label{fig:flow}
 \end{figure}
@@ -508,6 +544,57 @@ where NHEX3$\_$35 and NHEX3$\_$35 reside in the helper file as defines. The code
 \subsubsection{Task 6: Solution}
 
 
+Figure~\ref{fig:flow} shows the result of task 3.6 which is copied below:
+
+
+the public key is:  \seqsplit{753A40451F899A616484B6727AA9349D039ED0CB0B00087F1672886858C8E63DABCB14038E2D3F5ECA50518B83D3EC5991732EC188CFAF10CA6642185CB071034B052882B1F689BD2B18F12B0B3D2E7881F1FEF387754535F80793F2E1AAAA81E4B2B0DABB763B935B77D14BC594BDF514AD2A1E20CE29082876AAEEAD764D69855E8FDAF1A506C54BC11F2FD4AF29DBB7F0EF4D5BE8E16891255D8C07134EEF6DC2DECC48725868DD821E4B04D0C89DC392617DDF6D79485D80421709D6F6FFF5CBA19E145CB5657287E1C0D4157AAB7B827BBB1E4FA2AEF2123751AAD2D9B86358C9C77B573ADD8942DE4F30C9DEEC14E627E17C0719E2CDEF1F910281933} \\
+the hash for task6 is:  \seqsplit{01FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF003031300D060960864801650304020105000420}\textbf{\seqsplit{85088F934D3E58E3673EA5BE32C7C8CF6965E4AB93FBED4FFF634723F46D5693}}
+
+pre-computed hash: 85088f934d3e58e3673ea5be32c7c8cf6965e4ab93fbed4fff634723f46d5693
+
+The website used for this part is \url{github.com}. It can easily be seen that the pre-computed hash occures in the calculated hash near the end. The other characters before the has is just noise. 
+
+The steps to run this task are as follows:
+\begin{verbatim}
+openssl s_client -connect www.github.com:443 -showcerts > openssl_dump.txt
+\end{verbatim}
+
+The certificate for the CA authority and github are then copied into c0.pem and c1.pem. Github's cert is going to be the first listed cert whereas the CA authority will always be the second listed cert.
+
+We then extract the modulus from the CA cert
+\begin{verbatim}
+openssl x509 -in c1.pem -noout -modulus
+\end{verbatim}
+
+The exponent is found in the long listing:
+\begin{verbatim}
+openssl x509 -in c1.pem -text -noout
+\end{verbatim}
+
+Manually extracting the signature from github with
+\begin{verbatim}
+openssl x509 -in c0.pem -text -noout
+\end{verbatim}
+
+And then removing all the spaces and colons with the bash command
+\begin{verbatim}
+cat signature | tr -d ’[:space:]:’
+\end{verbatim}
+
+Finally, we need to compute the hash so we can compare it to the program's value.
+
+\begin{verbatim}
+openssl asn1parse -i -in c0.pem -strparse 4 -out c0_body.bin -noout
+sha256sum c0_body.bin
+\end{verbatim}
+
+
+Now we have the signature, the modulus, the exponent, and a pre-computed hash. The hash is computed with the following line of code in the program
+\begin{verbatim}
+BIGNUM* t6_dec = RSA_DEC(BN_t6, t6_mod, t6_pub_key);
+\end{verbatim}
+
+which does match the pre-computed hash value!
 
 
 \end{document}
