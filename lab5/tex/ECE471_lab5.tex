@@ -73,6 +73,40 @@
 \section{Packet Sniffing and Spoofing Lab}
 
 \subsection{Task 1.1: Sniffing Packets}
+\subsubsection{Task 1.1A}
+The program is created below:
+\begin{verbatim}
+#!/usr/bin/python
+from scapy.all import *
+
+def print_pkt(pkt):
+    pkt.show()
+
+pkt = sniff(filter=’icmp’,prn=print_pkt)
+
+\end{verbatim}
+
+This code is placed into a file named sniffing.py and made executable with the following command
+
+\begin{verbatim}
+$ sudo chown +x sniffing.py
+\end{verbatim}
+The code can then be ran with the following command
+\begin{verbatim}
+$ ./sniffing.py
+\end{verbatim}
+
+The output is as follows:
+\begin{figure}[H]
+\includegraphics[scale=0.45]{images/p1t1_1.png}
+\caption{Running the sniffing program without root}
+\label{fig:p1t1_1}
+\end{figure}
+
+
+
+\subsubsection{Task 1.1b}
+
 \subsection{Task 1.2: Spoofing ICMP Packets}
 \subsection{Task 1.4: Sniffing and-then Spoofing (Extra Credit)}
 

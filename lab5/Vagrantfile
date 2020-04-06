@@ -1,14 +1,18 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+$script = <<-SCRIPT
+git clone https://github.com/mitchdz/dev_setup ~/dev_setup
+cd ~/dev_setup; make all; make bashrc
+SCRIPT
+
 #BOX_IMAGE = "ubuntu/trusty64"
 BOX_IMAGE = "generic/ubuntu1904"
 Vagrant.configure(2) do |config|
     config.vm.define "client" do |client|
         client.vm.hostname = "client"
         client.vm.box = BOX_IMAGE
-        client.vm.network "private_network", ip: "192.168.60.60"
-        client.vm.provision "shell",
-          inline: "/bin/sh /vagrant/installDev.sh"
+        #client.vm.network "private_network", ip: "192.168.60.60"
+        client.vm.provision "shell", inline: $script
     end
 end
