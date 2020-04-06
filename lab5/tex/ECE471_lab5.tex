@@ -75,7 +75,10 @@
 
 \subsection{Task 1.1: Sniffing Packets}
 \subsubsection{Task 1.1A}
-The program is created below:
+Wireshark is the most popular sniffing tool, and it is easy to use. We will use it throughout the entire lab.
+However, it is difficult to use Wireshark as a building block to construct other tools. We will use Scapy
+for that purpose. The objective of this task is to learn how to use Scapy to do packet sniffing in Python
+programs. A sample code is provided in the following:
 \begin{verbatim}
 #!/usr/bin/python
 from scapy.all import *
@@ -97,21 +100,49 @@ The code can then be ran with the following command
 $ ./sniffing.py
 \end{verbatim}
 
-The output is as follows:
+The output after running as root is as follows:
 \begin{figure}[H]
 \includegraphics[scale=0.45]{images/p1t1_1.png}
 \caption{Running the sniffing program without root}
 \label{fig:p1t1_1}
 \end{figure}
 
+Looks like we need to utilize root to be able to run this script!
 
-
-
+here's the output
+\begin{verbatim}
+<Sniffed: UDP:0 TCP:0 ICMP:2 Other:0>
+\end{verbatim}
 
 \subsubsection{Task 1.1b}
+Task 1.1B. Usually, when we sniff packets, we are only interested certain types of packets. We can do
+that by setting filters in sniffing. Scapy’s filter use the BPF (Berkeley Packet Filter) syntax; you can find the
+BPF manual from the Internet. Please set the following filters and demonstrate your sniffer program again
+(each filter should be set separately):
+\begin{enumerate}
+	\item Capture only the ICMP packet
+	\item Capture any TCP packet that comes from a particular IP and with a destination port number 23.
+	\item Capture packets comes from or to go to a particular subnet. You can pick any subnet, such as
+	128.230.0.0/16; you should not pick the subnet that your VM is attached to.
+\end{enumerate}
+
+
 
 \subsection{Task 1.2: Spoofing ICMP Packets}
 \subsection{Task 1.4: Sniffing and-then Spoofing (Extra Credit)}
+In this task, you will combine the sniffing and spoofing techniques to implement the following sniff-and-
+then-spoof program. You need two VMs on the same LAN. From VM A, you ping an IP X. This will
+generate an ICMP echo request packet. If X is alive, the ping program will receive an echo reply, and
+print out the response. Your sniff-and-then-spoof program runs on VM B, which monitors the LAN through
+packet sniffing. Whenever it sees an ICMP echo request, regardless of what the target IP address is, your
+program should immediately send out an echo reply using the packet spoofing technique. Therefore, regard-
+less of whether machine X is alive or not, the ping program will always receive a reply, indicating that X
+is alive. You need to use Scapy to do this task. In your report, you need to provide evidence to demonstrate
+that your technique works.
+
+
+
+
 
 \section{ARPCache Poisoning Attack Lab}
 \subsection{Task 2.1: ARP Cache Poisoning}
