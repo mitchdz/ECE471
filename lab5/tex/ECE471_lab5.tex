@@ -88,6 +88,10 @@ def print_pkt(pkt):
 
 pkt = sniff(filter=’icmp’,prn=print_pkt)
 
+if __name__ == "__main__":
+    # execute only if run as a script
+    print_pkt(pkt)
+
 \end{verbatim}
 
 This code is placed into a file named sniffing.py and made executable with the following command
@@ -109,13 +113,10 @@ The output after running as root is as follows:
 
 Looks like we need to utilize root to be able to run this script!
 
-here's the output
-\begin{verbatim}
-<Sniffed: UDP:0 TCP:0 ICMP:2 Other:0>
-\end{verbatim}
+After running the script as root, nothing gets shown because there has been no packets sent yet.
 
 \subsubsection{Task 1.1b}
-Task 1.1B. Usually, when we sniff packets, we are only interested certain types of packets. We can do
+\tab Usually, when we sniff packets, we are only interested certain types of packets. We can do
 that by setting filters in sniffing. Scapy’s filter use the BPF (Berkeley Packet Filter) syntax; you can find the
 BPF manual from the Internet. Please set the following filters and demonstrate your sniffer program again
 (each filter should be set separately):
@@ -126,9 +127,84 @@ BPF manual from the Internet. Please set the following filters and demonstrate y
 	128.230.0.0/16; you should not pick the subnet that your VM is attached to.
 \end{enumerate}
 
+1. pkt = sniff(filter="icmp")
+
+To only pull icmp packets, you can use the filter option to force only icmp packets to show up.
+
+2. pkt = sniff(filter="tcp and port 23 and host 66.35.250.151")
+
+To pull up only tcp packets on a certain port from a certain host, the preceding filter can be applied. To chain together multiple filters, you can simply put the keyword `and` between the filters. `tcp`, `port 23`, `host 66.35.250.151`.
+
+3. pkt = sniff(filter="host 128.230.0.0/16")
+
+To gather packets on a subnet, the above filter is applied!
+
 
 
 \subsection{Task 1.2: Spoofing ICMP Packets}
+
+As a packet spoofing tool, Scapy allows us to set the fields of IP packets to arbitrary values. The objective
+of this task is to spoof IP packets with an arbitrary source IP address. We will spoof ICMP echo request
+packets, and send them to another VM on the same network. We will use Wireshark to observe whether our
+request will be accepted by the receiver. If it is accepted, an echo reply packet will be sent to the spoofed IP
+address. The following code shows an example of how to spoof an ICMP packets.
+
+\begin{verbatim}
+>>> from scapy.all import
+>>> a = IP()
+>>> a.dst = ’10.0.2.3’
+>>> b = ICMP()
+>>> p = a/b
+>>> send(p)
+.
+Sent 1 packets.
+\end{verbatim}
+In the code above, Line À creates an IP object from the IP class; a class attribute is defined for each IP
+header field. We can use ls(a) or ls(IP) to see all the attribute names/values. We can also use a.show()
+and IP.show() to do the same. Line Á shows how to set the destination IP address field. If a field is not set,
+a default value will be used.
+
+Line Â creates an ICMP object. The default type is echo request. In Line Ã, we stack a and b together
+to form a new object. The / operator is overloaded by the IP class, so it no longer represents division;
+instead, it means adding b as the payload field of a and modifying the fields of a accordingly. As a result,
+we get a new object that represent an ICMP packet. We can now send out this packet using send() in
+Line Ä. Please make any necessary change to the sample code, and then demonstrate that you can spoof an
+ICMP echo request packet with an arbitrary source IP address.
+
+
+And here is the results of sniffing the packet using the program from Task1.1a.
+\begin{verbatim}
+###[ Ethernet ]###
+dst       = 3c:37:86:f2:c4:56
+src       = d0:ab:d5:bb:40:f9
+type      = IPv4
+###[ IP ]###
+version   = 4
+ihl       = 5
+tos       = 0x0
+len       = 28
+id        = 1
+flags     =
+frag      = 0
+ttl       = 64
+proto     = icmp
+chksum    = 0xad33
+src       = 192.168.1.2
+dst       = 10.0.2.3
+\options   \
+###[ ICMP ]###
+type      = echo-request
+code      = 0
+chksum    = 0xf7ff
+id        = 0x0
+seq       = 0x0
+\end{verbatim}
+
+This shows that we can utilize scapy to do exactly what is says it should do.
+
+
+
+
 \subsection{Task 1.4: Sniffing and-then Spoofing (Extra Credit)}
 In this task, you will combine the sniffing and spoofing techniques to implement the following sniff-and-
 then-spoof program. You need two VMs on the same LAN. From VM A, you ping an IP X. This will
