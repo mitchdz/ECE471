@@ -222,6 +222,86 @@ that your technique works.
 
 \section{ARPCache Poisoning Attack Lab}
 \subsection{Task 2.1: ARP Cache Poisoning}
+The objective of this task is to use packet spoofing to launch an ARP cache poisoning attack on a target,
+such that when two victim machines A and B try to communicate with each other, their packets will be
+intercepted by the attacker, who can make changes to the packets, and can thus become the man in the
+middle between A and B. This is called Man-In-The-Middle (MITM) attack. In this lab, we use ARP cahce
+poisoning to conduct an MITM attack. \\
+\tab The following code skeleton shows how to construct an ARP packet using Scapy.
+\begin{verbatim}
+#!/usr/bin/python3
+from scapy.all import *
+E = Ether()
+A = ARP()
+pkt = E/A
+sendp(pkt)
+\end{verbatim}
+
+\tab The above program constructs and sends an ARP packet. Please set necessary attribute names/values to
+define your own ARP packet. We can use ls(ARP) to see the attribute names of the ARP class. If a field
+is not set, a default value will be used (see the third column of the output):
+
+\begin{verbatim}
+>>> from scapy.all import *
+>>> ls(ARP)
+<data about ARP>
+\end{verbatim}
+In this task, we have three VMs, A, B, and M. We would like to attack A’s ARP cache, such that the
+following results is achieved in A’s ARP cache.
+
+\begin{verbatim}
+B’s IP address --> M’s MAC address
+\end{verbatim}
+
+
+
+To execute this lab, the following script is used inside a file named `VagrantFile`
+\begin{verbatim}
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrant multi-machine sample setup
+
+Vagrant.configure("2") do |config|
+  config.vm.define :m do |m|
+    m.vm.box = "hashicorp/precise64"
+    m.vm.network :private_network, ip: "10.0.0.10"
+    m.vm.hostname = "m"
+  end
+
+  config.vm.define :a do |a|
+     a.vm.box = "hashicorp/precise64"
+     a.vm.network :private_network, ip: "10.0.0.11"
+     a.vm.hostname = "a"
+  end
+
+  config.vm.define :b do |b|
+    b.vm.box = "hashicorp/precise64"
+    b.vm.network :private_network, ip: "10.0.0.12"
+    b.vm.hostname = "b"
+  end
+end
+\end{verbatim}
+
+To populate the virtual machines, run the following command in the directory that the VagrantFile exists in:
+
+\begin{verbatim}
+$ vagrant up
+\end{verbatim}
+This command will provision 3 machines each with host name `m`, `a`, `b`.
+
+You can then ssh into these virtual machines with the following command:
+\begin{verbatim}
+$ vagrant ssh [m|a|b]
+\end{verbatim}
+Where you choose whether to ssh into m, a, or b.
+
+
+
+
+
+
+
 
 
 
