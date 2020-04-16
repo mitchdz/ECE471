@@ -367,7 +367,7 @@ methods, and report whether each method works or not.
 	\end{itemize}
 \end{itemize}
 
-
+\subsubsection{Task 2.1: Solution}
 To execute this lab, the following script is used inside a file named `VagrantFile`
 \begin{verbatim}
 # -*- mode: ruby -*-
@@ -410,17 +410,59 @@ $ vagrant ssh [m|a|b]
 Where you choose whether to ssh into m, a, or b.
 
 
-\subsubsection{1A}
+With this setup, the following data is noticed with the virtual machines:
+
+Machine M) \\
+IP: 10.0.0.10 \\
+MAC: 08:00:27:99:99:20 \\
+
+Machine A) \\
+IP: 10.0.0.11 \\
+MAC:08:00:27:d8:f0:ef \\
 
 
+Machine B) \\
+IP: 10.0.0.12 \\
+MAC: 08:00:27:3a:1b:dd \\
 
+To be able to check the ARP cache, you can run the following command:
+\begin{verbatim}
+$ sudo arp -n
+\end{verbatim}
 
+To clear the cache you can use the following command:
+\begin{verbatim}
+$ sudo ip -s -s neigh flush all
+\end{verbatim}
 
-\subsubsection{1B}
-\subsubsection{1C}
+\subsubsection{1A ARP request}
+Using the ARP request, we send a request from M to A
 
+\begin{verbatim}
+$ sudo arp -a
+? (10.0.2.2) at 52:54:00:12:35:02 [ether] on eth0
+? (10.0.2.2) at 52:54:00:12:35:02 [ether] on eth0
+\end{verbatim}
 
+above are the results of sending an ARP request. The cache is not poisoned.
 
+\subsubsection{1B ARP reply}
+Sending a reply however, results in this ARP cache.
+\begin{verbatim}
+$ sudo arp -a
+? (10.0.2.2) at 52:54:00:12:35:02 [ether] on eth0
+? (10.0.0.10) at 08:00:27:3a:1b:dd [ether] on eth0
+\end{verbatim}
+As can be observed, the cache was poisoned.
+
+\subsubsection{1C ARP gratuitous message}
+The gratuitous message approach is a very good way to attack a certain network. By flooding the network saying you are a certain person, it is difficult to ignore the messages and will often times work. Similar to the ARP reply, this message poisoned the cache successfully.
+
+\begin{verbatim}
+$ sudo arp -a
+? (10.0.2.2) at 52:54:00:12:35:02 [ether] on eth0
+? (10.0.0.10) at 08:00:27:3a:1b:dd [ether] on eth0
+\end{verbatim}
 
 
 
